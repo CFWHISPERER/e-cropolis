@@ -1,6 +1,12 @@
+
 <script lang="ts">
 
   import { onMount, onDestroy } from 'svelte';
+  import { inventoryLandscape } from './landscape-inventory.mjs';
+  import {
+    createLandscapeSnapshot,
+    downloadLandscapeSnapshot
+  } from './landscape-snapshot.mjs';
   import { getSharedSimulator, releaseSharedSimulator, MicropolisSimulator } from '$lib/MicropolisSimulator';
   import { micropolisReactive } from '$lib/MicropolisReactive.svelte';
   import TileView from '$lib/TileView.svelte';
@@ -70,11 +76,117 @@
     micropolisSimulator = await getSharedSimulator(micropolisReactive.engineCallback, viewRenderRef);
     micropolisReactive.attach(micropolisSimulator);
 
-    // Pause sim ticks until tile atlas is loaded — avoids render-before-ready race.
-    micropolisSimulator.setPaused(true);
-    micropolisSimulator.syncMapViews();
-    await tileView!.initialize(micropolisSimulator);
-    micropolisSimulator.setPaused(false);
+  // E-Cropolis 003: Verify fixed-seed generator availability.
+  // Diagnostic only — does not generate or change terrain.
+   console.log(
+     'E-Cropolis 003: Fixed-seed generator available:',
+     typeof micropolisSimulator.micropolis?.generateSomeCity === 'function'
+ ); 
+
+// E-Cropolis 003: Explicitly triggered terrain generation.
+// Does not run automatically.
+async function generateECropolisLandscape(seed = 20261011) {
+  const simulator = micropolisSimulator;
+
+  if (!simulator?.micropolis) {
+    console.error('E-Cropolis 003: Simulator unavailable');
+    return;
+  }
+
+  if (!window.confirm(
+    `Replace the current city with E-Cropolis terrain seed ${seed}?`
+  )) {
+    return;
+  }
+
+  // Stop the simulation before generating terrain.
+  simulator.setPaused(true);
+
+  // Generate the landscape through the C++ WebAssembly engine.
+  simulator.micropolis.generateSomeCity(seed);
+
+  if (!simulator.syncMapViews() || !simulator.mapData) {
+    console.error('E-Cropolis 003: Map data unavailable');
+    return;
+  }
+
+  const inventory = inventoryLandscape(simulator.mapData);
+
+  const snapshot = createLandscapeSnapshot(
+    simulator.mapData,
+    {
+      landscape: 'undeveloped',
+      seed: String(seed)
+    }
+  );
+
+  console.log('E-Cropolis 003: Landscape generated', seed);
+  console.table(inventory.categories);
+  console.log('E-Cropolis 003: Full inventory', inventory);
+
+  downloadLandscapeSnapshot(
+    snapshot,
+    `e-cropolis-undeveloped-seed-${seed}.json`
+  );
+
+  // Leave the simulation paused.
+}
+
+ // E-Cropolis 003: Browser command, registered without executing it.
+  (window as typeof window & {
+  generateECropolisLandscape?: (seed?: number) => Promise<void>;
+}).generateECropolisLandscape = generateECropolisLandscape;
+
+console.log('E-Cropolis 003: Browser command registered');  
+
+
+   // Pause sim ticks until tile atlas is loaded — avoids render-before-ready race.
+   micropolisSimulator.setPaused(true);
+   micropolisSimulator.syncMapViews();
+   await tileView!.initialize(micropolisSimulator);
+
+   // E-Cropolis Experiment 001: read-only landscape inventory.
+   try {
+   if (!micropolisSimulator.syncMapViews() || !micropolisSimulator.mapData) {
+      console.warn('E-Cropolis 001: map data unavailable');
+     } else {
+      const inventory = inventoryLandscape(micropolisSimulator.mapData);
+
+    console.log('E-Cropolis 001: Landscape Inventory');
+    console.table(inventory.categories);
+    console.log('E-Cropolis 001: Full report', inventory);
+    const snapshot = createLandscapeSnapshot(
+      micropolisSimulator.mapData,
+      { landscape: 'developed-city' }
+    );
+
+    console.log(
+      'E-Cropolis 002: Snapshot prepared',
+      snapshot.schema,
+      snapshot.tiles.length,
+      'tiles'
+    );
+
+    (window as typeof window & {
+      downloadECropolisSnapshot?: () => void
+    }).downloadECropolisSnapshot = () => {
+      downloadLandscapeSnapshot(
+        snapshot,
+        'e-cropolis-developed-city.json'
+      );
+    };
+console.table(
+  Object.entries(inventory.tileIds)
+    .map(([id, count]) => ({ tileId: Number(id), count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 20)
+);
+  }
+  } catch (error) {
+  console.error('E-Cropolis 001: Inventory failed', error);
+  } finally {
+  micropolisSimulator.setPaused(false);
+  }
 
     console.log("MicropolisView: onMount:", "micropolisSimulator:", micropolisSimulator);
 

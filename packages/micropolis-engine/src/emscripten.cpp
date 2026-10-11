@@ -1079,6 +1079,7 @@ function createTypedArrayFromMap(mapInstance) {
     .function("simTick", &Micropolis::simTick)
     .function("simUpdate", &Micropolis::simUpdate)
     .function("generateSomeRandomCity", &Micropolis::generateSomeRandomCity)
+    .function("generateSomeCity", &Micropolis::generateSomeCity)
     .function("getMapAddress", &Micropolis::getMapAddress)
     .function("getMapSize", &Micropolis::getMapSize)
     .function("getMopAddress", &Micropolis::getMopAddress)

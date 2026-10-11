@@ -372,6 +372,7 @@ export interface Micropolis extends ClassHandle {
   simTick(): void;
   simUpdate(): void;
   generateSomeRandomCity(): void;
+  generateSomeCity(_0: number): void;
   getMapAddress(): number;
   getMapSize(): number;
   getMopAddress(): number;
