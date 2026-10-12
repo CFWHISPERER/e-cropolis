@@ -137,8 +137,116 @@ async function generateECropolisLandscape(seed = 20261011) {
   generateECropolisLandscape?: (seed?: number) => Promise<void>;
 }).generateECropolisLandscape = generateECropolisLandscape;
 
-console.log('E-Cropolis 003: Browser command registered');  
+console.log('E-Cropolis 003: Browser command registered');
 
+// E-Cropolis 005: Capture the current working landscape.
+// Read-only operation; requires a paused simulation.
+function captureECropolisWorkingLandscape() {
+  const simulator = micropolisSimulator;
+
+  if (!simulator?.micropolis) {
+    console.error('E-Cropolis 005: Simulator unavailable');
+    return;
+  }
+
+  if (!simulator.paused || !simulator.micropolis.simPaused) {
+    console.warn('E-Cropolis 005: Capture refused; pause state:', {
+  paused: simulator.paused,
+  simPaused: simulator.micropolis.simPaused,
+  simSpeed: simulator.micropolis.simSpeed
+});
+    return;
+  }  
+
+  // Refresh the view into WebAssembly memory.
+  if (!simulator.syncMapViews() || !simulator.mapData) {
+    console.error('E-Cropolis 005: Map data unavailable');
+    return;
+  }
+
+  // Create an independent copy of the current landscape.
+  const snapshot = createLandscapeSnapshot(
+    simulator.mapData,
+    {
+      landscape: 'working',
+      experiment: 'E-Cropolis-005'
+    }
+  );
+
+  console.log(
+    'E-Cropolis 005: Working landscape captured',
+    snapshot.capturedAt,
+    snapshot.tiles.length,
+    'tiles'
+  );
+
+  // Download the working landscape snapshot.
+  downloadLandscapeSnapshot(
+    snapshot,
+    `e-cropolis-working-${Date.now()}.json`
+  );
+}
+
+// Register the browser command without executing it.
+(window as typeof window & {
+  captureECropolisWorkingLandscape?: () => void;
+}).captureECropolisWorkingLandscape =
+  captureECropolisWorkingLandscape;
+
+console.log('E-Cropolis 005: Working capture command registered');
+
+// E-Cropolis 005: Explicitly freeze the working simulation.
+// Freezing and capturing remain separate operations.
+function freezeECropolisWorkingLandscape() {
+  const simulator = micropolisSimulator;
+
+  if (!simulator?.micropolis) {
+    console.error('E-Cropolis 005: Simulator unavailable');
+    return;
+  }
+
+    // Recover a partially paused engine if necessary.
+  if (simulator.micropolis.simPaused &&
+      simulator.micropolis.simSpeed !== 0) {
+    simulator.micropolis.setSpeed(0);
+  }
+
+  // Pause the native engine before stopping the JS timer.
+  simulator.micropolis.pause();
+  simulator.setPaused(true);
+
+  // Verify that both pause states agree.
+  const frozen =
+    simulator.paused === true &&
+    simulator.micropolis.simPaused === true &&
+    simulator.micropolis.simSpeed === 0;
+
+  if (!frozen) {
+    console.error(
+      'E-Cropolis 005: Freeze verification failed',
+      {
+        paused: simulator.paused,
+        simPaused: simulator.micropolis.simPaused,
+        simSpeed: simulator.micropolis.simSpeed
+      }
+    );
+    return;
+  }
+
+  console.log('E-Cropolis 005: Freeze verified', {
+    paused: simulator.paused,
+    simPaused: simulator.micropolis.simPaused,
+    simSpeed: simulator.micropolis.simSpeed
+  });
+}
+
+// Register the explicit freeze command.
+(window as typeof window & {
+  freezeECropolisWorkingLandscape?: () => void;
+}).freezeECropolisWorkingLandscape =
+  freezeECropolisWorkingLandscape;
+
+console.log('E-Cropolis 005: Freeze command registered');
 
    // Pause sim ticks until tile atlas is loaded — avoids render-before-ready race.
    micropolisSimulator.setPaused(true);
