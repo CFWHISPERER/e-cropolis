@@ -305,11 +305,55 @@ console.table(
       };
       w.micropolisSkywrite = triggerSkywriting;
       w.micropolisSkyPilot = toggleSkywritingPilot;
+
+      // E-Cropolis 008: Explicit controlled-time commands.
+      // Registration does not change simulation state.
+      const getControlledSimulator = () => {
+        const sim = micropolisSimulator;
+        if (!sim?.micropolis) {
+          console.warn('E-Cropolis 008: Simulator unavailable');
+          return null;
+        }
+        return sim;
+      };
+
+      (window as any).enableECropolisControlledTime = () => {
+        const sim = getControlledSimulator();
+        if (!sim) return;
+        sim.setControlledTimeMode(true);
+        console.log('E-Cropolis 008: Controlled time:', sim.controlledTimeMode);
+      };
+
+      (window as any).stepECropolisControlledTime = () => {
+        const sim = getControlledSimulator();
+        if (!sim || !sim.controlledTimeMode) {
+          console.warn('E-Cropolis 008: Controlled time is not enabled');
+          return;
+        }
+        sim.stepControlledTime();
+        console.log('E-Cropolis 008: One controlled step requested');
+      };
+
+      (window as any).disableECropolisControlledTime = () => {
+        const sim = getControlledSimulator();
+        if (!sim) return;
+        sim.setControlledTimeMode(false);
+        console.log('E-Cropolis 008: Controlled time:', sim.controlledTimeMode);
+      };
+
     }
   });
 
   onDestroy(() => {
     console.log('MicropolisView: onDestroy');
+
+    // E-Cropolis 008: Remove commands belonging to this view.
+    if (typeof window !== 'undefined') {
+      delete (window as any).enableECropolisControlledTime;
+      delete (window as any).stepECropolisControlledTime;
+      delete (window as any).disableECropolisControlledTime;
+    }
+
     micropolisReactive.registerMapPan(null);
     micropolisReactive.detach();
     releaseSharedSimulator(viewRenderRef || undefined);
