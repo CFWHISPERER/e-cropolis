@@ -48,7 +48,11 @@ export async function loadMicropolisMainModule(): Promise<MainModule> {
 			printErr: () => {},
 			setStatus: () => {},
 			locateFile: (filename: string) => path.join(projectLib, filename),
-			wasmBinary,
+			instantiateWasm: (imports: WebAssembly.Imports, successCallback: (instance: WebAssembly.Instance) => void) => {
+                                const module = new WebAssembly.Module(wasmBinary);
+                                successCallback(new WebAssembly.Instance(module, imports));
+                                return {};
+                        },
 			getPreloadedPackage: () => dataBinary
 		})) as MainModule;
 	} catch (nodeError) {
@@ -70,7 +74,11 @@ export async function loadMicropolisMainModule(): Promise<MainModule> {
 			printErr: () => {},
 			setStatus: () => {},
 			locateFile: (filename: string) => path.join(projectLib, filename),
-			wasmBinary,
+			instantiateWasm: (imports: WebAssembly.Imports, successCallback: (instance: WebAssembly.Instance) => void) => {
+                                const module = new WebAssembly.Module(wasmBinary);
+                                successCallback(new WebAssembly.Instance(module, imports));
+                                return {};
+                        },
 			getPreloadedPackage: () => dataBinary
 		})) as MainModule;
 	} finally {
