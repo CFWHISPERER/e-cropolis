@@ -2,8 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { loadMicropolisMainModule } from './wasm/node';
 import { createMapMopViews } from './wasm/views';
 import { micropolisReactive } from './MicropolisReactive.svelte';
-import { createMapMopViews } from './wasm/views';
-import { micropolisReactive } from './MicropolisReactive.svelte';
 
 describe('E-Cropolis-008: controlled simulation time', () => {
     it('advances exactly 16 phases through 16 explicit ticks', async () => {

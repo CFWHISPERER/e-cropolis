@@ -89,6 +89,12 @@ export class MicropolisSimulator {
     framesPerSecond: number = 0;
     pausedFramesPerSecond: number = 0;
     paused: boolean = false;
+    controlledTimeMode: boolean = false;
+    private savedSimulationSettings: {
+        speed: number;
+        passes: number;
+        heatSteps: number;
+    } | null = null;
     render: (() => void) = () => {};
     private disposed: boolean = false;
     private isInitialized: boolean = false;
@@ -104,6 +110,8 @@ export class MicropolisSimulator {
 			try { this.dispose(); } catch { /* ignore */ }
 		}
 		this.disposed = false;
+                this.controlledTimeMode = false;
+                this.savedSimulationSettings = null;
 
 		this.micropolisengine = await loadMicropolisEngine();
 		if (this.micropolisengine === null) {
@@ -174,7 +182,7 @@ export class MicropolisSimulator {
 
     tick() {
         //console.log("MicropolisSimulator: tick");
-        if (this.disposed) return;
+        if (this.disposed || this.controlledTimeMode) return;
         this.micropolis?.simTick();
         this.micropolis?.animateTiles();
 
@@ -190,6 +198,22 @@ export class MicropolisSimulator {
         }
     }
     
+    stepControlledTime(): void {
+        if (this.disposed || !this.controlledTimeMode || !this.micropolis) return;
+
+        this.micropolis.simTick();
+
+        if (this.renderCallbacks.size > 0) {
+            for (const fn of this.renderCallbacks) {
+                try { fn(); } catch (e) {
+                    console.warn('MicropolisSimulator: view render failed:', e);
+                }
+            }
+        } else {
+            try { this.render(); } catch {}
+        }
+    }
+
     setGameSpeed(speed: number) {
         this.gameSpeed = speed;
         this.setFramesPerSecond(this.keyFramesPerSecondValues[this.gameSpeed]);
@@ -202,15 +226,55 @@ export class MicropolisSimulator {
         this.setFramesPerSecond(lastFramesPerSecond);
       }
     
-	setFramesPerSecond(fps: number): void {
+	setControlledTimeMode(enabled: boolean): void {
+        if (this.disposed || !this.micropolis) return;
+        if (enabled === this.controlledTimeMode) return;
+
+        const engine = this.micropolis;
+
+        if (enabled) {
+            if (engine.simPaused) {
+                console.warn('Controlled time requires an unpaused native engine.');
+                return;
+            }
+
+            this.savedSimulationSettings = {
+                speed: engine.simSpeedMeta,
+                passes: engine.simPasses,
+                heatSteps: engine.heatSteps,
+            };
+
+            this.controlledTimeMode = true;
+            this.setFramesPerSecond(this.framesPerSecond);
+
+            engine.setSpeed(3);
+            engine.setPasses(1);
+            engine.heatSteps = 0;
+        } else {
+            const saved = this.savedSimulationSettings;
+
+            if (saved) {
+                engine.setSpeed(saved.speed);
+                engine.setPasses(saved.passes);
+                engine.heatSteps = saved.heatSteps;
+            }
+
+            this.savedSimulationSettings = null;
+            this.controlledTimeMode = false;
+            this.setFramesPerSecond(this.framesPerSecond);
+        }
+    }
+
+    setFramesPerSecond(fps: number): void {
         if (this.disposed) return;
         this.framesPerSecond = fps;
     
         if (this.tickIntervalId !== null) {
             clearInterval(this.tickIntervalId);
+            this.tickIntervalId = null;
         }
     
-        if (fps <= 0) {
+        if (fps <= 0 || this.controlledTimeMode) {
           return;
         }
     
@@ -219,6 +283,10 @@ export class MicropolisSimulator {
       }
     
       setPaused(nowPaused: boolean) {
+        if (this.controlledTimeMode) {
+            console.warn('Pause changes are disabled during controlled-time mode.');
+            return;
+        }
     
         const wasPaused = this.paused;
         this.paused = nowPaused;
@@ -246,6 +314,8 @@ export class MicropolisSimulator {
             this.tickIntervalId = null;
         }
         this.disposed = true;
+        this.controlledTimeMode = false;
+        this.savedSimulationSettings = null;
         // Make render a no-op to avoid stale closures
         this.render = () => {};
         // Release wasm/embind objects
