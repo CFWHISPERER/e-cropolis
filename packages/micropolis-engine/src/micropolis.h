@@ -2037,6 +2037,8 @@ private:
 
 public:
 
+    bool deterministicSeedEnabled = false;
+    int deterministicSeed = 0;
 
     UQuad nextRandom;
 

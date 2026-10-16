@@ -84,7 +84,11 @@
 /** Reset many game state variables */
 void Micropolis::initWillStuff()
 {
-    randomlySeedRandom();
+    if (deterministicSeedEnabled) {
+        seedRandom(deterministicSeed);
+    } else {
+        randomlySeedRandom();
+    }
     initGraphMax();
     destroyAllSprites();
 

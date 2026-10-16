@@ -1247,6 +1247,8 @@ function createTypedArrayFromMap(mapInstance) {
     .function("getERandom", &Micropolis::getERandom)
     .function("randomlySeedRandom", &Micropolis::randomlySeedRandom)
     .function("seedRandom", &Micropolis::seedRandom)
+    .property("deterministicSeedEnabled", &Micropolis::deterministicSeedEnabled)
+    .property("deterministicSeed", &Micropolis::deterministicSeed)
 
     // Game State and Data Access
     .function("getTile", &Micropolis::getTile)
