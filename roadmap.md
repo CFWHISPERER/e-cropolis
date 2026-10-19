@@ -1,10 +1,10 @@
 # E-Cropolis — Development Roadmap
 
-**Version:** 0.1  
-**Updated:** October 9, 2026  
-**Project phase:** Foundation and discovery  
-**Parent initiative:** [Project Lichen](https://projectlichen.github.io/)  
-**Companion document:** [STATUS.md](STATUS.md)
+**Version:** 0.1
+**Updated:** October 19, 2026
+**Project phase:** Foundation and reproducible simulation experiments
+**Parent initiative:** [Project Lichen](https://projectlichen.github.io/)
+**Companion document:** [status.md](status.md)
 
 > **Guiding question:** What might people build here if they began by asking what was already here?
 
@@ -29,7 +29,7 @@ Our goal is not to make a simulation that confirms a preferred philosophy. It is
 | ID | Milestone | Current status | Evidence of completion |
 |---|---|---|---|
 | M0 | Public project foundation | In progress | Core documentation published and cross-linked |
-| M1 | Reproducible MicropolisCore baseline | Planned | Documented build and repeatable run |
+| M1 | Reproducible MicropolisCore baseline | In progress — experimental baseline verified | Documented build and repeatable run |
 | M2 | Regional landscape evidence baseline | Planned | Versioned dataset inventory and documented fictional mapping |
 | M3 | First ecological model and experiment | Planned | Reproducible test with assumptions and limitations |
 | M4 | Settlement decisions and consequences | Proposed | At least two comparable scenarios and recorded outputs |
@@ -153,11 +153,11 @@ Explore how collaborators can contribute without needing to read the entire stor
 
 ## Immediate next actions
 
-1. Finish publishing the foundation documents and link them from the existing E-Cropolis page.
-2. Open a GitHub Issue for the MicropolisCore baseline, including the previously encountered source-download/build difficulties if still relevant.
-3. Create the first evidence inventory for the Monroe-area watershed study.
-4. Draft the epistemic-integrity specification and decision log.
-5. Select **one** initial ecological question only after assessing data availability and model suitability.
+1. Complete remaining public documentation links, provenance conventions and the decision log.
+2. Rebuild and validate application WASM artifacts from the corrected C++ source, preserving existing artifacts until integration is verified.
+3. Document independent reproduction of the MicropolisCore experimental baseline.
+4. Create the first evidence inventory for the Monroe-area watershed, soils and landscape study.
+5. Define Experiment 015 around one evidence-grounded ecological mechanism, with explicit assumptions, measurable outputs and limitations.
 
 ## Roadmap revision policy
 
