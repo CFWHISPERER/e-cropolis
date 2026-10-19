@@ -179,3 +179,35 @@ The zero interaction measured in Experiments 014A and 014B concerns simulator te
 Review the public project status and roadmap against the verified technical progress.
 
 Then identify a small, evidence-grounded ecological mechanism suitable for Experiment 015, explicitly distinguishing real biological processes from existing Micropolis terrain calculations.
+
+---
+
+## October 19, 2026: WASM integration and regression verification
+
+**Objective:** Determine whether the corrected Micropolis engine was already integrated into the application and establish a broader regression baseline without replacing existing artifacts.
+
+### Actions and observations
+
+- Inspected the production engine's lowercase `makefile` and identified its build and installation targets.
+- Confirmed that `make install` would overwrite application artifacts; did not execute it.
+- Compared the isolated corrected WASM build with the application's existing generated artifacts.
+- Calculated SHA-256 hashes of both WASM binaries. Both returned `22229e29fe127e06c29502cf54318cf3f951c784b9b7810810e7857c52e3d2a8`.
+- Compared JavaScript loaders. After excluding the intentional `// @ts-nocheck` directive and Emscripten-generated temporary-file comments, no differences remained.
+- Ran Experiment 014B individually: one test passed.
+- Ran Experiments 014A and 014B together: two tests passed.
+- Ran nine established E-Cropolis test files together: all nine files and ten tests passed.
+- Ran `npx tsc --noEmit -p tsconfig.json --pretty false`: completed without reported errors.
+
+### Outcome
+
+**Verified:** The application contains a WASM binary identical to the corrected isolated validation build. The JavaScript loaders are equivalent apart from the documented nonfunctional differences. The established E-Cropolis regression suite and TypeScript check pass.
+
+No WASM rebuild, installation, or application artifact replacement was required during this investigation.
+
+### Limitations
+
+These findings establish binary identity and successful testing within the current environment. They do not establish independent reproducibility, exhaustive memory safety, or ecological validity.
+
+### Next action
+
+Preserve the verified baseline and prepare an independently reproducible experiment protocol. Begin identifying real Monroe-area environmental evidence before selecting the ecological mechanism for Experiment 015.
