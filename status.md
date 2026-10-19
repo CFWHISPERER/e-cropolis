@@ -1,10 +1,10 @@
 
 # E-Cropolis — Project Status
 
-**Project:** E-Cropolis  
-**Part of:** Project Lichen  
-**Last updated:** October 9, 2026  
-**Current phase:** Foundation and discovery  
+**Project:** E-Cropolis
+**Part of:** Project Lichen
+**Last updated:** October 19, 2026
+**Current phase:** Foundation and reproducible simulation experiments
 **Development status:** Pre-prototype
 
 > **Guiding question:** What might people build here if they began by asking what was already here?
@@ -36,9 +36,9 @@ The project combines three complementary activities:
 | Fictional property | Established | Bert's 650 acres near Monroe |
 | Watershed research | Planned | Real regional hydrological data |
 | Soil and ecological research | Planned | USDA, USGS and other sources |
-| Simulation engine | Under evaluation | MicropolisCore |
+| Simulation engine | Verified experimental baseline | MicropolisCore; reproducibility and controlled-intervention tests completed |
 | Simulation architecture | Conceptual | Ecological, social and computational systems |
-| Working prototype | Not started | No E-Cropolis simulation demonstrated |
+| Working prototype | Experimental harness operational | Controlled Micropolis experiments completed; no ecological prototype or validated ecological model yet |
 | Public documentation | In progress | GitHub repository and Project Lichen website |
 
 **Status terminology**
@@ -107,7 +107,7 @@ Potential development areas include:
 
 These are research directions, not implemented features.
 
-**Current technical milestone:** Establish a reproducible baseline of the unmodified MicropolisCore simulation before introducing E-Cropolis-specific changes.
+**Current technical milestone:** Reproducible MicropolisCore baseline and controlled landscape-intervention experiments (009–014B) completed. Corrected C++ sprite lifecycle validated in an isolated WASM build; rebuilding and validating the application WASM artifacts remains outstanding. No ecological mechanism has yet been validated.
 
 ## 6. Research Questions
 
@@ -132,9 +132,9 @@ These questions remain open.
 | 1 | Establish project documentation | README, STATUS and ROADMAP published |
 | 2 | Document epistemic integrity principles | Initial evidence and assumptions framework published |
 | 3 | Establish geographic baseline | Selected regional datasets documented with provenance |
-| 4 | Evaluate MicropolisCore | Baseline builds and runs reproducibly |
-| 5 | Define first simulation experiment | Testable question, inputs, assumptions and outputs documented |
-| 6 | Implement initial experiment | Results reproducible and limitations recorded |
+| 4 | Evaluate MicropolisCore — experimental baseline verified | Reproducible runs and controlled interventions demonstrated in Experiments 009–014B; independent reproduction remains to be established |
+| 5 | Define first ecological experiment | Evidence-grounded question, hypotheses, inputs, assumptions and measurable outputs documented for Experiment 015 |
+| 6 | Implement first ecological experiment | Experiment 015 results reproducible, assumptions documented, and limitations and comparisons with ecological evidence reported |
 
 Milestone dates will be added as development progresses.
 
@@ -160,25 +160,25 @@ Use a dedicated GitHub repository for development records and retain the existin
 - Which MicropolisCore components can be reused without substantial modification?
 - How should ecological capability be represented and measured?
 - How can simulation results be compared with real-world observations?
-- What should constitute the first meaningful E-Cropolis experiment?
+- What should constitute the first evidence-grounded ecological experiment (Experiment 015)?
 
 ## 9. How Progress Will Be Reported
 
 Each substantial update should record:
 
-**What changed?**  
+**What changed?**
 The work completed or decision made.
 
-**What did we learn?**  
+**What did we learn?**
 New findings, including unexpected outcomes.
 
-**What supports the finding?**  
+**What supports the finding?**
 Evidence, data, references or reproducible experiments.
 
-**What remains uncertain?**  
+**What remains uncertain?**
 Known limitations, unresolved questions and competing explanations.
 
-**What comes next?**  
+**What comes next?**
 The next investigation or development milestone.
 
 ---
