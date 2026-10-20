@@ -1,6 +1,14 @@
 # e-cropolis
 An open exploration of regenerative settlements, ecological simulation, distributed intelligence, and governance, grounded in epistemic integrity. Part of Project Lichen.
 
+## New to E-Cropolis? Start here
+
+You do not need to know GitHub or computer programming to explore the ideas behind E-Cropolis. The project asks how human settlements might support thriving soils, watersheds, biodiversity, communities, and future generations.
+
+**[Read E-Cropolis — Foundational Influences and Ethos (v0.1)](https://github.com/CFWHISPERER/e-cropolis/blob/e-cropolis-experiments-archive/experiments/e-cropolis/foundations/influences.md)**
+
+This introductory document explains the thinkers and books informing the project, the principles being explored, and the questions guiding our work. It is a living statement of influences and hypotheses, not a claim that the ideas have already been proven.
+
 From SimCity to E-Cropolis
 SimCity demonstrated something remarkable.
 
